@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does it apply to you? · Försäkringskassan for expats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0c0a;
+    --paper:#f5f0e8;
+    --gold:#c9a84c;
+    --rust:#b85c38;
+    --teal:#3a7d74;
+    --ink-soft:rgba(245,240,232,0.72);
+    --ink-faint:rgba(245,240,232,0.45);
+    --line:rgba(201,168,76,0.28);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Cormorant Garamond',serif;
+    font-size:20px;
+    line-height:1.55;
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+  }
+  /* grain */
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:0.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{
+    max-width:680px;
+    margin:0 auto;
+    padding:64px 28px 40px;
+    position:relative;
+    z-index:2;
+  }
+  .kicker{
+    font-family:'DM Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:18px;
+  }
+  h1{
+    font-weight:600;
+    font-size:clamp(38px,7vw,58px);
+    line-height:1.04;
+    letter-spacing:-0.01em;
+    margin-bottom:18px;
+  }
+  h1 em{font-style:italic;color:var(--gold);}
+  .lede{
+    font-size:21px;
+    color:var(--ink-soft);
+    max-width:54ch;
+    margin-bottom:14px;
+  }
+  .safety{
+    font-family:'DM Mono',monospace;
+    font-size:12px;
+    line-height:1.65;
+    color:var(--ink-soft);
+    background:rgba(58,125,116,0.08);
+    border:1px solid rgba(58,125,116,0.4);
+    border-radius:2px;
+    padding:14px 16px;
+    margin:6px 0 18px;
+    max-width:58ch;
+  }
+  .safety b{color:var(--teal);font-weight:500;}
+  .disclaimer{
+    font-family:'DM Mono',monospace;
+    font-size:12.5px;
+    line-height:1.6;
+    color:var(--ink-faint);
+    border-left:2px solid var(--line);
+    padding:6px 0 6px 16px;
+    margin:26px 0 48px;
+    max-width:56ch;
+  }
+  /* questions */
+  .q{
+    border-top:1px solid var(--line);
+    padding:30px 0;
+  }
+  .q-num{
+    font-family:'DM Mono',monospace;
+    font-size:12px;
+    color:var(--gold);
+    letter-spacing:0.18em;
+    margin-bottom:8px;
+  }
+  .q-text{
+    font-size:25px;
+    font-weight:500;
+    line-height:1.3;
+    margin-bottom:18px;
+  }
+  .opts{display:flex;flex-wrap:wrap;gap:10px;}
+  .opt{
+    font-family:'DM Mono',monospace;
+    font-size:13px;
+    letter-spacing:0.02em;
+    color:var(--paper);
+    background:transparent;
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:11px 18px;
+    cursor:pointer;
+    transition:all 0.18s ease;
+  }
+  .opt:hover{border-color:var(--gold);color:var(--gold);}
+  .opt[aria-pressed="true"]{
+    background:var(--gold);
+    border-color:var(--gold);
+    color:var(--ink);
+    font-weight:500;
+  }
+  /* button */
+  .run-row{
+    border-top:1px solid var(--line);
+    padding-top:34px;
+    margin-top:8px;
+  }
+  .run{
+    font-family:'DM Mono',monospace;
+    font-size:14px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    background:var(--rust);
+    color:var(--paper);
+    border:none;
+    border-radius:2px;
+    padding:16px 32px;
+    cursor:pointer;
+    transition:all 0.2s ease;
+  }
+  .run:hover{background:#a04e2e;transform:translateY(-1px);}
+  .run:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+  .hint{
+    font-family:'DM Mono',monospace;
+    font-size:11.5px;
+    color:var(--ink-faint);
+    margin-top:14px;
+  }
+  /* results */
+  #results{margin-top:14px;}
+  .res-head{
+    font-family:'DM Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:8px;
+  }
+  .res-title{
+    font-size:32px;
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  .res-sub{
+    color:var(--ink-soft);
+    margin-bottom:30px;
+    font-size:19px;
+  }
+  .trap{
+    border:1px solid var(--line);
+    border-left:3px solid var(--rust);
+    border-radius:2px;
+    padding:22px 24px;
+    margin-bottom:18px;
+    background:rgba(201,168,76,0.03);
+    animation:rise 0.5s ease backwards;
+  }
+  .trap h3{
+    font-size:24px;
+    font-weight:600;
+    margin-bottom:6px;
+    color:var(--paper);
+  }
+  .trap .tag{
+    font-family:'DM Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin-bottom:12px;
+  }
+  .trap p{color:var(--ink-soft);font-size:18.5px;margin-bottom:12px;}
+  .trap .move{
+    color:var(--paper);
+    border-top:1px dashed var(--line);
+    padding-top:12px;
+  }
+  .trap .move b{color:var(--gold);font-weight:600;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:4px;}
+  .trap a{
+    color:var(--teal);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    font-family:'DM Mono',monospace;
+    font-size:12.5px;
+  }
+  .trap a:hover{color:var(--gold);border-color:var(--gold);}
+  .clear-trap{
+    border:1px solid var(--line);
+    border-left:3px solid var(--teal);
+    border-radius:2px;
+    padding:22px 24px;
+    background:rgba(58,125,116,0.05);
+  }
+  .clear-trap h3{font-size:24px;font-weight:600;margin-bottom:6px;}
+  .clear-trap p{color:var(--ink-soft);font-size:18.5px;}
+  .nums{
+    font-family:'DM Mono',monospace;
+    font-size:12.5px;
+    line-height:1.9;
+    color:var(--ink-faint);
+    border-top:1px solid var(--line);
+    margin-top:34px;
+    padding-top:24px;
+  }
+  .nums b{color:var(--gold);}
+  .restart{
+    background:none;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    font-family:'DM Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:12px 24px;
+    border-radius:2px;
+    cursor:pointer;
+    margin-top:30px;
+    transition:all 0.18s ease;
+  }
+  .restart:hover{border-color:var(--gold);color:var(--gold);}
+  @keyframes rise{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .hidden{display:none;}
+  /* footer */
+  footer{
+    border-top:1px solid var(--line);
+    margin-top:56px;
+    padding-top:28px;
+    text-align:center;
+  }
+  .kofi{
+    display:inline-block;
+    font-family:'DM Mono',monospace;
+    font-size:13px;
+    letter-spacing:0.06em;
+    color:var(--ink);
+    background:var(--gold);
+    padding:11px 22px;
+    border-radius:2px;
+    text-decoration:none;
+    transition:transform 0.18s ease;
+  }
+  .kofi:hover{transform:translateY(-1px);}
+  .socials{
+    font-family:'DM Mono',monospace;
+    font-size:11.5px;
+    color:var(--ink-faint);
+    margin-top:20px;
+    line-height:2;
+  }
+  .socials a{color:var(--ink-faint);text-decoration:none;}
+  .socials a:hover{color:var(--gold);}
+  .checked-note{
+    font-family:'DM Mono',monospace;
+    font-size:10.5px;
+    color:var(--ink-faint);
+    margin-top:18px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">Försäkringskassan · for expats in Sweden</div>
+  <h1>Does it actually<br>apply to <em>you?</em></h1>
+  <p class="lede">Sweden's benefit system is generous, but it runs on rules you're expected to already know. Answer a few questions. See only the traps that hit your situation, and the one move that protects you.</p>
+
+  <div class="safety">
+    <b>This tool never asks for your personnummer, BankID, login, or bank details.</b> If any version asks for those, it is fake. Close it. Made by an individual, not affiliated with Försäkringskassan. Always confirm your own case directly with them.
+  </div>
+
+  <div class="disclaimer">
+    A plain-language explainer, not advice. It never tells you how much you'll get, only which official page to read. For your own case, check forsakringskassan.se/english or call 0771-524 524 (Mon–Fri 8–16). Rules change yearly. Last checked June 2026.
+  </div>
+
+  <form id="quiz">
+
+    <div class="q">
+      <div class="q-num">01</div>
+      <div class="q-text">Are you changing jobs, or between jobs right now?</div>
+      <div class="opts" data-key="jobgap">
+        <button type="button" class="opt" data-val="gap">Yes, with a gap</button>
+        <button type="button" class="opt" data-val="nogap">Switching, no gap</button>
+        <button type="button" class="opt" data-val="no">No, settled</button>
+      </div>
+    </div>
+
+    <div class="q">
+      <div class="q-num">02</div>
+      <div class="q-text">Do you have a child under 2, or one on the way?</div>
+      <div class="opts" data-key="child">
+        <button type="button" class="opt" data-val="under1">Under 1</button>
+        <button type="button" class="opt" data-val="over1">Turned 1, under 2</button>
+        <button type="button" class="opt" data-val="none">No</button>
+      </div>
+    </div>
+
+    <div class="q">
+      <div class="q-num">03</div>
+      <div class="q-text">Are you about to reduce your working hours?</div>
+      <div class="opts" data-key="hours">
+        <button type="button" class="opt" data-val="yes">Yes</button>
+        <button type="button" class="opt" data-val="no">No</button>
+      </div>
+    </div>
+
+    <div class="q">
+      <div class="q-num">04</div>
+      <div class="q-text">Planning travel outside the EU/EEA this year?</div>
+      <div class="opts" data-key="travel">
+        <button type="button" class="opt" data-val="noneu">Yes, non-EU</button>
+        <button type="button" class="opt" data-val="eu">Only within EU</button>
+        <button type="button" class="opt" data-val="no">No travel</button>
+      </div>
+    </div>
+
+    <div class="q">
+      <div class="q-num">05</div>
+      <div class="q-text">If you have a partner, are they working in Sweden yet?</div>
+      <div class="opts" data-key="partner">
+        <button type="button" class="opt" data-val="notworking">Not working / new arrival</button>
+        <button type="button" class="opt" data-val="working">Working</button>
+        <button type="button" class="opt" data-val="na">No partner / N/A</button>
+      </div>
+    </div>
+
+    <div class="run-row">
+      <button type="button" class="run" id="run" disabled>Show what applies to me</button>
+      <div class="hint" id="hint">Answer at least one question to continue.</div>
+    </div>
+
+  </form>
+
+  <div id="results" class="hidden"></div>
+
+  <footer>
+    <a class="kofi" href="https://ko-fi.com/shamathakur" target="_blank" rel="noopener">Support the work</a>
+    <div class="socials">
+      <a href="https://instagram.com/shama_thakur77" target="_blank" rel="noopener">@shama_thakur77</a> ·
+      <a href="https://pinterest.com/thkrshama" target="_blank" rel="noopener">@thkrshama</a> ·
+      <a href="https://linkedin.com/in/shama-t-b7250632" target="_blank" rel="noopener">LinkedIn</a> ·
+      <a href="https://substack.com/@shamathakur" target="_blank" rel="noopener">Substack</a> ·
+      <a href="https://medium.com/@shamathakur77" target="_blank" rel="noopener">Medium</a> ·
+      <a href="https://shamathakur.carrd.co" target="_blank" rel="noopener">shamathakur.carrd.co</a>
+    </div>
+    <div class="checked-note">Built from official Försäkringskassan English pages. Not affiliated with Försäkringskassan.</div>
+  </footer>
+
+</div>
+
+<script>
+  const FK = "https://www.forsakringskassan.se/english";
+  const answers = {};
+
+  // option selection
+  document.querySelectorAll('.opts').forEach(group=>{
+    const key = group.dataset.key;
+    group.querySelectorAll('.opt').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        group.querySelectorAll('.opt').forEach(b=>b.setAttribute('aria-pressed','false'));
+        btn.setAttribute('aria-pressed','true');
+        answers[key] = btn.dataset.val;
+        updateRun();
+      });
+    });
+  });
+
+  const runBtn = document.getElementById('run');
+  const hint = document.getElementById('hint');
+  function updateRun(){
+    const answered = Object.keys(answers).length;
+    if(answered>0){
+      runBtn.disabled=false;
+      hint.textContent = answered<5 ? `${answered} of 5 answered. You can run now or answer more for a fuller picture.` : "All answered. Ready.";
+    }
+  }
+
+  // trap definitions
+  const traps = {
+    jobgap:{
+      title:"The job gap that zeroes your SGI",
+      tag:"Affects every future benefit",
+      body:"Your SGI is the income figure every benefit is calculated from. A gap between two jobs with nothing protecting your status can reset it to zero, and zero SGI means zero sick pay and minimal parental pay.",
+      move:"If a gap is unavoidable, register as a job seeker at Arbetsförmedlingen on day one and actively look for work. That secures your SGI for up to three months from your last working day.",
+      link:"/moving-to-working-studying-or-newly-arrived-in-sweden/social-insurance-in-sweden/sickness-benefit-qualifying-income"
+    },
+    nogap:{
+      title:"Good news on the job switch",
+      tag:"You're protected, keep it that way",
+      body:"Switching jobs with no gap keeps your SGI intact, recalculated on the new salary. The trap only bites if there's an unprotected break, even a few days.",
+      move:"Make sure the new job genuinely starts before the old one ends. Confirm the dates overlap or touch, with no empty days in between.",
+      link:"/moving-to-working-studying-or-newly-arrived-in-sweden/social-insurance-in-sweden/sickness-benefit-qualifying-income"
+    },
+    hours_after1:{
+      title:"Cutting hours after your child turns 1",
+      tag:"The most-missed parent trap",
+      body:"Once your child turns 1, your SGI is only protected during parental leave if you're actually drawing parental allowance for the hours you're not working. Drop your hours without taking parental benefit for them, and your SGI gets recalculated downward, lowering every future benefit.",
+      move:"If you reduce hours after the first birthday, take out parental allowance for the dropped hours, even at a low level, to hold your SGI in place. Confirm the mechanics by phone before you change your contract.",
+      link:"/moving-to-working-studying-or-newly-arrived-in-sweden/social-insurance-in-sweden/sickness-benefit-qualifying-income"
+    },
+    hours_general:{
+      title:"Reducing hours lowers your SGI",
+      tag:"Plan the timing",
+      body:"Going part-time recalculates your SGI on the lower income, which quietly lowers any future sick or parental pay. It's not wrong to do it, but it's worth knowing before you sign.",
+      move:"If you're planning a child or might need sick leave soon, check how the reduced SGI changes those benefits before you cut hours. A quick call to Försäkringskassan settles it.",
+      link:"/moving-to-working-studying-or-newly-arrived-in-sweden/social-insurance-in-sweden/sickness-benefit-qualifying-income"
+    },
+    travel_noneu:{
+      title:"Falling sick outside the EU",
+      tag:"Your EU card does nothing here",
+      body:"The European Health Insurance Card only covers medically necessary care inside the EU/EEA and Switzerland. Travel to a non-EU country and it doesn't apply. And if you're already on a benefit, leaving Sweden without telling Försäkringskassan can put payments at risk.",
+      move:"Get separate private travel insurance for non-EU trips. If you're receiving any benefit, tell Försäkringskassan before you travel, not after.",
+      link:"/sick/if-you-travel-abroad-and-become-ill"
+    },
+    travel_eu:{
+      title:"Order your EHIC before you go",
+      tag:"Free, but easy to forget",
+      body:"Within the EU/EEA and Switzerland, the European Health Insurance Card covers medically necessary care. It's free, but you have to request it ahead of time, and without it you can be stuck paying upfront.",
+      move:"Order the EHIC from Försäkringskassan before any EU trip. It takes a little time to arrive, so don't leave it to the last week.",
+      link:"/sick/if-you-travel-abroad-and-become-ill"
+    },
+    karens:{
+      title:"Karensavdrag, the deduction nobody explains",
+      tag:"Applies whenever you call in sick",
+      body:"When you call in sick from an employed job, you don't get full pay from minute one. The front of any sick spell carries a deduction (karensavdrag). Then sick pay comes from your employer for the early period, and only after that does Försäkringskassan's benefit kick in at 80% of SGI. Three different things, three different rules.",
+      move:"Don't budget a sick week as a fully paid week. If you're repeatedly ill, ask Försäkringskassan about the high-cost protection that limits repeated deductions.",
+      link:"/sick/employee"
+    },
+    partner:{
+      title:"Parental pay with no SGI is a flat 250 kr/day",
+      tag:"Plan who takes which days",
+      body:"A partner with no qualifying Swedish income still gets parental leave days, but they pay only 250 kr/day instead of 80% of salary. A non-working partner taking the bulk of the early days can leave a lot of money on the table.",
+      move:"Time the leave so the parent with the higher SGI covers the expensive early stretch. If the other partner is building toward qualifying income (six consecutive months of work), it can be worth waiting.",
+      link:"/moving-to-working-studying-or-newly-arrived-in-sweden/social-insurance-in-sweden/sickness-benefit-qualifying-income"
+    }
+  };
+
+  function buildResults(){
+    const hits = [];
+    // karensavdrag always relevant if employed-ish (anyone not explicitly "between jobs with gap")
+    if(answers.jobgap==='gap') hits.push(traps.jobgap);
+    if(answers.jobgap==='nogap') hits.push(traps.nogap);
+
+    if(answers.hours==='yes'){
+      if(answers.child==='over1') hits.push(traps.hours_after1);
+      else hits.push(traps.hours_general);
+    } else if(answers.child==='over1'){
+      hits.push(traps.hours_after1);
+    }
+
+    if(answers.travel==='noneu') hits.push(traps.travel_noneu);
+    if(answers.travel==='eu') hits.push(traps.travel_eu);
+
+    // partner trap if partner not working AND there's a child situation
+    if(answers.partner==='notworking' && (answers.child==='under1'||answers.child==='over1')) hits.push(traps.partner);
+
+    // karensavdrag: only relevant to people currently employed.
+    // Excludes the "between jobs with a gap" case, where it doesn't apply.
+    if(answers.jobgap==='no' || answers.jobgap==='nogap') hits.push(traps.karens);
+
+    // dedupe
+    return [...new Set(hits)];
+  }
+
+  document.getElementById('run').addEventListener('click',()=>{
+    const hits = buildResults();
+    const box = document.getElementById('results');
+    let html = '';
+
+    if(hits.length===0){
+      html += `<div class="res-head">Result</div>`;
+      html += `<div class="res-title">Nothing major flagged</div>`;
+      html += `<p class="res-sub">Based on what you answered, none of the common expat traps clearly apply right now. That can change the moment you switch jobs, cut hours, or travel, so it's worth re-checking when your situation shifts.</p>`;
+      html += `<div class="clear-trap"><h3>One thing to keep handy</h3><p>Know your SGI. It's the number behind every benefit. If you ever stop working, even briefly, protect it the same day by registering with Arbetsförmedlingen.</p></div>`;
+    } else {
+      html += `<div class="res-head">Result</div>`;
+      html += `<div class="res-title">${hits.length} ${hits.length===1?'trap':'traps'} apply to you</div>`;
+      html += `<p class="res-sub">Here's the specific move for each, and the official page to confirm it.</p>`;
+      hits.forEach((t,i)=>{
+        html += `<div class="trap" style="animation-delay:${i*0.08}s">
+          <h3>${t.title}</h3>
+          <div class="tag">${t.tag}</div>
+          <p>${t.body}</p>
+          <div class="move"><b>What to do</b>${t.move}</div>
+          <p style="margin-top:14px;margin-bottom:0;"><a href="${FK}${t.link}" target="_blank" rel="noopener">Official Försäkringskassan page →</a></p>
+        </div>`;
+      });
+    }
+
+    html += `<div class="nums">
+      2026 figures · SGI ceiling <b>592 000 kr/year</b> · minimum to qualify <b>~14 200 kr/year</b> · sickness & parental benefit <b>80% of SGI</b> over 365 days · parental pay with no SGI <b>250 kr/day</b><br>
+      Note: Försäkringskassan's English pages may still show 2025 figures. The numbers above come from their Swedish pages, which update first. A phone call settles any doubt.
+    </div>`;
+    html += `<button class="restart" id="restart">Start over</button>`;
+
+    box.innerHTML = html;
+    box.classList.remove('hidden');
+    box.scrollIntoView({behavior:'smooth',block:'start'});
+
+    document.getElementById('restart').addEventListener('click',()=>{
+      Object.keys(answers).forEach(k=>delete answers[k]);
+      document.querySelectorAll('.opt').forEach(b=>b.setAttribute('aria-pressed','false'));
+      box.classList.add('hidden');
+      box.innerHTML='';
+      runBtn.disabled=true;
+      hint.textContent="Answer at least one question to continue.";
+      document.querySelector('.wrap').scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+</script>
+</body>
+</html>
